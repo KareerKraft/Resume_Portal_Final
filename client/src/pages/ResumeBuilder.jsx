@@ -91,14 +91,63 @@ const ResumeBuilder = () => {
 
   /* ================= ACTIONS ================= */
 
+  const saveChanges = async () => {
+    try {
+      const formData = new FormData();
+      
+      // Add image file if it exists and is a File object
+      if (resumeData.personal_info.image instanceof File) {
+        formData.append('image', resumeData.personal_info.image);
+      }
+      
+      // Create a copy of resumeData without the image for sending
+      const resumeDataToSend = JSON.parse(JSON.stringify(resumeData));
+      if (resumeData.personal_info.image instanceof File) {
+        delete resumeDataToSend.personal_info.image;
+      }
+      
+      // Add form fields
+      formData.append('resumeId', resumeId);
+      formData.append('resumeData', JSON.stringify(resumeDataToSend));
+      formData.append('removeBackground', removeBackground);
+      
+      const response = await axios.put(
+        `http://localhost:3000/api/resumes/update`,
+        formData,
+        {
+          headers: { 
+            Authorization: token
+          }
+        }
+      );
+      
+      // Update state with the response data (includes image URL if uploaded)
+      if (response.data.resume) {
+        setResumeData(response.data.resume);
+      }
+      
+      toast.success('Resume saved successfully!');
+    } catch (error) {
+      toast.error(error?.response?.data?.message || error.message);
+      console.error(error);
+    }
+  }
+
   const changeResumeVisibility = async () => {
     const newPublic = !resumeData.public
 
     try {
+      // Create a copy of resume data for sending (without File objects)
+      const resumeDataToSend = JSON.parse(JSON.stringify(resumeData));
+      resumeDataToSend.public = newPublic;
+      
+      // Remove image if it's a File object (will be undefined after JSON.stringify)
+      // JSON.stringify will convert File objects to {}, so we just send as-is
+
       // persist to server
       await axios.put(
         `http://localhost:3000/api/resumes/update`,
-        { resumeId, resumeData: { public: newPublic } },
+        { resumeId, resumeData: resumeDataToSend },
         { headers: { Authorization: token } }
       )
 
@@ -287,6 +336,7 @@ const ResumeBuilder = () => {
 
               {/* SAVE CHANGES */}
               <button
+                onClick={saveChanges}
                 className="bg-gradient-to-br from-green-100 to-green-200
                 ring-1 ring-green-300 text-green-600
                 hover:ring-green-400 transition-all

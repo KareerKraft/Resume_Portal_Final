@@ -13,6 +13,18 @@ import upload from "../configs/multer.js";   // ✅ added .js
 
 const resumeRouter = express.Router();
 
+// Debug middleware
+const debugMiddleware = (req, res, next) => {
+    console.log("Request received:", {
+        method: req.method,
+        path: req.path,
+        hasFile: !!req.file,
+        fileFieldname: req.file?.fieldname,
+        bodyKeys: Object.keys(req.body || {})
+    });
+    next();
+};
+
 // Create Resume
 resumeRouter.post('/create', protect, createResume);
 
@@ -20,6 +32,7 @@ resumeRouter.post('/create', protect, createResume);
 resumeRouter.put(
     '/update',
     upload.single('image'),   // upload middleware
+    debugMiddleware,           // debug middleware
     protect,
     updateResume
 );

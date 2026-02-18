@@ -1,6 +1,6 @@
 import imagekit from "../configs/imagekit.js";
 import Resume from "../models/Resume.js";
-import fs from 'fs'
+import { Readable } from 'stream';
 
 export const createResume = async (req, res) => {
     try {
@@ -91,28 +91,88 @@ export const getPublicResumeById = async (req, res) => {
 export const updateResume = async (req, res) => {
     try {
         const userId = req.userId;
-        const { resumeId, resumeData, removeBackground } = req.body
+        let { resumeId, resumeData, removeBackground } = req.body;
         const image = req.file;
 
-        let resumeDataCopy = JSON.parse(JSON.stringify(resumeData));
+        console.log("Update Resume Request:", { 
+            resumeId, 
+            removeBackground, 
+            hasImage: !!image,
+            imageSize: image?.size,
+            imageBuffer: image?.buffer ? 'exists' : 'missing'
+        });
 
-        if (image) {
-
-            const imageBufferData = fs.createReadStream(image.path)
-            const response = await imagekit.files.upload({
-                file: fs.createReadStream('path/to/file'),
-                fileName: 'resume.jpg',
-                folder: 'user-resumes',
-                transformation: {
-                    pre: 'w-300,h-300,fo-face,z-0.75' +
-                        (removeBackground ? ',e-bgremove' : '')
-                }
-            });
-
-            resumeDataCopy.personal_info.image = response.url
+        // Validate resumeId
+        if (!resumeId) {
+            return res.status(400).json({ message: "resumeId is required" });
         }
 
-        const resume = await Resume.findByIdAndUpdate({ userId, _id: resumeId }, resumeDataCopy, { new: true })
+        // Parse resumeData if it's a string (from FormData)
+        if (typeof resumeData === 'string') {
+            try {
+                resumeData = JSON.parse(resumeData);
+            } catch (parseError) {
+                console.error("Failed to parse resumeData:", parseError);
+                return res.status(400).json({ message: "Invalid resumeData format" });
+            }
+        }
+
+        // Don't copy, just use the parsed data
+        let updateData = resumeData;
+
+        // Handle image upload to ImageKit
+        if (image && image.buffer && image.buffer.length > 0) {
+            try {
+                console.log("Uploading image to ImageKit:", {
+                    bufferLength: image.buffer.length,
+                    mimetype: image.mimetype,
+                    originalname: image.originalname
+                });
+                
+                // Get file extension from originalname
+                const fileExt = image.originalname.split('.').pop() || 'jpg';
+                const fileName = `resume-${Date.now()}.${fileExt}`;
+                
+                // Create readable stream from buffer
+                const stream = Readable.from([image.buffer]);
+                
+                const response = await imagekit.files.upload({
+                    file: stream,
+                    fileName: fileName,
+                });
+
+                console.log("ImageKit upload successful:", response.url);
+
+                if (updateData.personal_info) {
+                    updateData.personal_info.image = response.url;
+                }
+            } catch (uploadError) {
+                console.error("ImageKit upload error:", uploadError);
+                console.error("Error message:", uploadError.message);
+                console.error("Error status:", uploadError.statusCode);
+                return res.status(400).json({ 
+                    message: "Image upload failed: " + uploadError.message 
+                });
+            }
+        } else if (image) {
+            console.warn("Image file received but buffer is missing/empty", {
+                hasBuffer: !!image.buffer,
+                bufferLength: image.buffer?.length
+            });
+        }
+
+        // Update resume in database
+        const resume = await Resume.findOneAndUpdate(
+            { _id: resumeId, userId },
+            updateData,
+            { new: true, runValidators: false }
+        );
+
+        if (!resume) {
+            return res.status(404).json({ message: "Resume not found" });
+        }
+
+        console.log("Resume updated successfully");
 
         return res.status(200).json({
             message: "Resume updated successfully",
@@ -120,6 +180,7 @@ export const updateResume = async (req, res) => {
         });
 
     } catch (error) {
-        return res.status(400).json({ message: error.message })
+        console.error("Update resume error:", error);
+        return res.status(400).json({ message: error.message });
     }
 }
