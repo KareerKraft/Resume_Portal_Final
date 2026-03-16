@@ -4,15 +4,22 @@ import { useDispatch } from "react-redux";
 import { useNavigate, useLocation } from "react-router-dom";
 import api from "../configs/api";
 import { login } from "../app/features/authSlice";
+import { GoogleLogin } from "@react-oauth/google";
+import { useSelector } from "react-redux";
 
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Detect mode based on path
   const isRegister = location.pathname === "/register";
 
+  const { user } = useSelector((state) => state.auth);
+  React.useEffect(() => {
+  if (user) {
+    navigate("/app");
+  }
+}, [user, navigate]);
   const [formData, setFormData] = React.useState({
     name: "",
     email: "",
@@ -30,7 +37,7 @@ const Login = () => {
       dispatch(login(data));
       localStorage.setItem("token", data.token);
 
-      navigate("/app"); // Redirect after successful login/register
+      navigate("/app");
     } catch (error) {
       console.log("Auth error:", error.response?.data || error.message);
     }
@@ -41,6 +48,25 @@ const Login = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleGoogleLogin = async (credentialResponse) => {
+    try {
+      const { data } = await api.post("/api/users/google-login", {
+        token: credentialResponse.credential,
+      });
+
+      // Save token
+      localStorage.setItem("token", data.token);
+
+      // Update redux state
+      dispatch(login(data));
+
+      // Redirect to dashboard
+      navigate("/app");
+
+    } catch (error) {
+      console.log("Google auth error:", error);
+    }
+  };
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-50">
       <form
@@ -103,6 +129,16 @@ const Login = () => {
           {isRegister ? "Sign up" : "Login"}
         </button>
 
+        {/* Google Login Button (Only on Login page) */}
+        {!isRegister && (
+          <div className="mt-4 flex justify-center">
+            <GoogleLogin
+              onSuccess={handleGoogleLogin}
+              onError={() => console.log("Google Login Failed")}
+            />
+          </div>
+        )}
+
         <p className="text-gray-500 text-sm mt-3 mb-11">
           {isRegister
             ? "Already have an account?"
@@ -119,4 +155,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Login; 
