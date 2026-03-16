@@ -27,14 +27,14 @@ const Hero = () => {
                     <div className="hidden md:flex items-center gap-8 transition duration-500 text-slate-800">
                         <a href="#" className="hover:text-green-600 transition">Home</a>
                         <a href="#features" className="hover:text-green-600 transition">Features</a>
-                        <a href="#testimonials" className="hover:text-green-600 transition">Testimonials</a>
+                        {/* <a href="#testimonials" className="hover:text-green-600 transition">Testimonials</a> */}
                         <a href="#cta" className="hover:text-green-600 transition">Contact</a>
                     </div>
 
                     <div className="flex gap-2">
-                        <Link to='/app?state=register' className="hidden md:block px-6 py-2 bg-green-500 hover:bg-green-700 active:scale-95 transition-all rounded-full text-white" hidden={user}>
+                        {/* <Link to='/app?state=register' className="hidden md:block px-6 py-2 bg-green-500 hover:bg-green-700 active:scale-95 transition-all rounded-full text-white" hidden={user}>
                             Get started
-                        </Link>
+                        </Link> */}
                         <Link to='/login' className="hidden md:block px-6 py-2 border active:scale-95 hover:bg-slate-50 transition-all rounded-full text-slate-700 hover:text-slate-900" hidden={user} >
                             Login
                         </Link>

@@ -13,6 +13,27 @@ const Footer = () => {
             <path d="M8.56 2.75c4.37 6 6 9.42 8 17.72"></path>
           </svg>
         </a> */}
+        <a
+          href="https://mail.google.com/mail/?view=cm&fs=1&to=kareerkraft24@gmail.com"
+          target="_blank"
+          rel="noreferrer"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="lucide lucide-mail size-5 hover:text-green-500"
+          >
+            <rect width="20" height="16" x="2" y="4" rx="2"></rect>
+            <path d="m22 7-10 5L2 7"></path>
+          </svg>
+        </a>
         <a href="https://www.linkedin.com/in/kareerkraft-undefined-917b663b6/" target="_blank" rel="noreferrer">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-linkedin size-5 hover:text-green-500" aria-hidden="true">
             <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
