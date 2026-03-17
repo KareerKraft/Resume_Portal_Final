@@ -73,7 +73,7 @@ const ResumeBuilder = () => {
       }
 
       try {
-        const { data } = await axios.get(`http://localhost:3000/api/resumes/get/${resumeId}`, {
+        const { data } = await axios.get(`/api/resumes/get/${resumeId}`, {
           headers: { Authorization: token }
         })
         if (data?.resume) {
@@ -112,7 +112,7 @@ const ResumeBuilder = () => {
       formData.append('removeBackground', removeBackground);
       
       const response = await axios.put(
-        `http://localhost:3000/api/resumes/update`,
+        `/api/resumes/update`,
         formData,
         {
           headers: { 
@@ -146,7 +146,7 @@ const ResumeBuilder = () => {
 
       // persist to server
       await axios.put(
-        `http://localhost:3000/api/resumes/update`,
+        `/api/resumes/update`,
         { resumeId, resumeData: resumeDataToSend },
         { headers: { Authorization: token } }
       )
