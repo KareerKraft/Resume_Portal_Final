@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { Link, useParams } from "react-router-dom"
 import { useSelector } from 'react-redux'
-import axios from 'axios'
+import api from '../configs/api'
 import { dummyResumeData } from "../assets/assets"
 import { toast } from 'react-hot-toast';
 import {
@@ -73,7 +73,7 @@ const ResumeBuilder = () => {
       }
 
       try {
-        const { data } = await axios.get(`/api/resumes/get/${resumeId}`, {
+        const { data } = await api.get(`/api/resumes/get/${resumeId}`, {
           headers: { Authorization: token }
         })
         if (data?.resume) {
@@ -111,7 +111,7 @@ const ResumeBuilder = () => {
       formData.append('resumeData', JSON.stringify(resumeDataToSend));
       formData.append('removeBackground', removeBackground);
       
-      const response = await axios.put(
+      const response = await api.put(
         `/api/resumes/update`,
         formData,
         {
@@ -145,7 +145,7 @@ const ResumeBuilder = () => {
       // JSON.stringify will convert File objects to {}, so we just send as-is
 
       // persist to server
-      await axios.put(
+      await api.put(
         `/api/resumes/update`,
         { resumeId, resumeData: resumeDataToSend },
         { headers: { Authorization: token } }

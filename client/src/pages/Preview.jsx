@@ -4,7 +4,7 @@ import { dummyResumeData } from "../assets/assets";
 import ResumePreview from "../components/ResumePreview"
 import Loader from "../components/Loader"
 import { ArrowLeftIcon } from "lucide-react"
-import axios from "axios"
+import api from "../configs/api"
 
 const Preview = () => {
   const { resumeId } = useParams()
@@ -16,8 +16,8 @@ const Preview = () => {
     const load = async () => {
       // try fetch public resume from server
       try {
-        const { data } = await axios.get(
-          `http://localhost:3000/api/resumes/public/${resumeId}`
+        const { data } = await api.get(
+          `/api/resumes/public/${resumeId}`
         )
 
         if (data?.resume) {

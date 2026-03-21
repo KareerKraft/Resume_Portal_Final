@@ -3,7 +3,7 @@ import { PlusIcon, UploadCloudIcon, UploadCloud, FilePenLineIcon, TrashIcon, Pen
 import { useNavigate } from "react-router-dom"
 import { useSelector } from "react-redux"
 import { toast } from 'react-hot-toast';
-import axios from "axios";
+import api from "../configs/api";
 
 const Dashboard = () => {
 
@@ -23,7 +23,7 @@ const Dashboard = () => {
 
     const loadAllResumes = async () => {
         try {
-            const { data } = await axios.get('http://localhost:3000/api/users/resumes', {
+            const { data } = await api.get('/api/users/resumes', {
                 headers: { Authorization: token }
             });
             setAllResumes(data.resumes);
@@ -39,8 +39,8 @@ const Dashboard = () => {
     const createResume = async (event) => {
         try {
             event.preventDefault()
-            const { data } = await axios.post(
-                'http://localhost:3000/api/resumes/create',
+            const { data } = await api.post(
+                '/api/resumes/create',
                 { title },
                 { headers: { Authorization: token } }
             );
@@ -62,8 +62,8 @@ const Dashboard = () => {
             formData.append('resume', resume);
             formData.append('title', title);
 
-            const { data } = await axios.post(
-                'http://localhost:3000/api/ai/upload-resume',
+            const { data } = await api.post(
+                '/api/ai/upload-resume',
                 formData,
                 { headers: { Authorization: token } }
             );
@@ -84,8 +84,8 @@ const Dashboard = () => {
         try {
             event.preventDefault()
 
-            await axios.put(
-                `http://localhost:3000/api/resumes/update`,
+            await api.put(
+                `/api/resumes/update`,
                 { resumeId: editResumeId, resumeData: { title } },
                 { headers: { Authorization: token } }
             );
@@ -112,8 +112,8 @@ const Dashboard = () => {
             const confirmDelete = window.confirm("Are you sure you want to delete this resume?")
             if (!confirmDelete) return
 
-            const { data } = await axios.delete(
-                `http://localhost:3000/api/resumes/delete/${resumeId}`,
+            const { data } = await api.delete(
+                `/api/resumes/delete/${resumeId}`,
                 { headers: { Authorization: token } }
             );
 
