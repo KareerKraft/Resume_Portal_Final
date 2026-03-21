@@ -6,6 +6,7 @@ import {
   MapPin,
   BriefcaseBusiness,
   Linkedin,
+  Github,
   Globe
 } from 'lucide-react'
 
@@ -33,6 +34,7 @@ const PersonalInfoForm = ({ data, onChange, removeBackground, setRemoveBackgroun
         },
         { key: "linkedin", label: "LinkedIn Profile", icon: Linkedin, type: "url" },
         { key: "website", label: "Personal Website", icon: Globe, type: "url" }
+
     ]
 
 

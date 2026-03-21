@@ -1,7 +1,44 @@
-import React from "react"
+import React, { useState } from "react"
 import { Sparkles } from "lucide-react"
+import { useSelector } from "react-redux"
+import { toast } from "react-hot-toast"
+import api from "../configs/api"
 
 const ProfessionalSummary = ({ data, onChange }) => {
+  const { token } = useSelector((state) => state.auth)
+  const [isEnhancing, setIsEnhancing] = useState(false)
+
+  const handleEnhance = async () => {
+    if (!data?.trim()) {
+      toast.error("Write a professional summary first")
+      return
+    }
+
+    if (!token) {
+      toast.error("Please log in to use AI enhancement")
+      return
+    }
+
+    try {
+      setIsEnhancing(true)
+
+      const { data: response } = await api.post(
+        "/api/ai/enhance-pro-sum",
+        { userContent: data },
+        { headers: { Authorization: token } }
+      )
+
+      if (response?.enhancedContent) {
+        onChange(response.enhancedContent)
+        toast.success("Professional summary enhanced")
+      }
+    } catch (error) {
+      toast.error(error?.response?.data?.message || error.message)
+    } finally {
+      setIsEnhancing(false)
+    }
+  }
+
   return (
     <div className="space-y-4">
       {/* Header */}
@@ -15,6 +52,16 @@ const ProfessionalSummary = ({ data, onChange }) => {
             Add summary for your resume here
           </p>
         </div>
+
+        <button
+          type="button"
+          onClick={handleEnhance}
+          disabled={isEnhancing}
+          className="flex items-center gap-1 px-3 py-1.5 text-xs bg-purple-100 text-purple-700 rounded hover:bg-purple-200 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+        >
+          <Sparkles className="size-3" />
+          {isEnhancing ? "Enhancing..." : "Enhance with AI"}
+        </button>
       </div>
 
       {/* Textarea */}
