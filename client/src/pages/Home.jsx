@@ -4,6 +4,7 @@ import Hero from '../components/home/Hero'
 import Features from '../components/home/Features'
 // import Testimonial from '../components/home/Testimonial'
 import CallToAction from '../components/home/CallToAction'
+import ResumeShowcase from "../components/home/ResumeShowcase";
 import Footer from '../components/home/Footer'
 
 const Home = () => {
@@ -14,6 +15,7 @@ const Home = () => {
         <Features />
         
         <CallToAction />
+        <ResumeShowcase /> 
         <Footer />
     </div>
   )
