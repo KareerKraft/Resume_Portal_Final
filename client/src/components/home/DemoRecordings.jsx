@@ -5,19 +5,19 @@ const RECORDINGS = [
     id: 1,
     title: "Build Your Resume",
     caption: "Show how users start a resume and choose a template.",
-    src: "/videos/recording-1.mp4",
+    src: "/videos/Resumeworking.mp4",
   },
   {
     id: 2,
     title: "Enhance With AI",
     caption: "Highlight the AI features that improve resume content.",
-    src: "/videos/recording-2.mp4",
+    src: "/videos/ResumeWorking2.mp4",
   },
   {
     id: 3,
     title: "Preview And Download",
     caption: "Demonstrate the preview flow and final export experience.",
-    src: "/videos/recording-3.mp4",
+    src: "/videos/ResumeWorking3.mp4",
   },
 ];
 
@@ -42,10 +42,21 @@ export default function DemoRecordings() {
     setActiveIndex((current) => (current + 1) % total);
   };
 
+  const goPrev = () => {
+    setActiveIndex((current) => (current - 1 + total) % total);
+  };
+
   useEffect(() => {
     const activeVideo = videoRefs.current[activeIndex];
+    const allVideos = videoRefs.current.filter(Boolean);
 
     clearTimeout(timerRef.current);
+    allVideos.forEach((video, index) => {
+      if (index !== activeIndex) {
+        video.pause();
+        video.currentTime = 0;
+      }
+    });
 
     if (!activeVideo || !loadedVideos[activeIndex]) {
       timerRef.current = setTimeout(goNext, FALLBACK_DURATION);
@@ -142,6 +153,25 @@ export default function DemoRecordings() {
                 </div>
               </article>
             ))}
+
+            <div className="demo-nav">
+              <button
+                type="button"
+                className="demo-nav-btn"
+                onClick={goPrev}
+                aria-label="Show previous recording"
+              >
+                Previous
+              </button>
+              <button
+                type="button"
+                className="demo-nav-btn is-primary"
+                onClick={goNext}
+                aria-label="Show next recording"
+              >
+                Next
+              </button>
+            </div>
           </div>
         </div>
       </section>
@@ -243,6 +273,40 @@ const CSS = `
       filter 0.75s ease;
     transform-origin: center center;
     backdrop-filter: blur(10px);
+  }
+
+  .demo-nav {
+    position: absolute;
+    left: 24px;
+    right: 24px;
+    bottom: -18px;
+    z-index: 5;
+    display: flex;
+    justify-content: space-between;
+    pointer-events: none;
+  }
+
+  .demo-nav-btn {
+    pointer-events: auto;
+    border: 1px solid rgba(21, 128, 61, 0.18);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.92);
+    color: #166534;
+    padding: 12px 18px;
+    font-size: 0.92rem;
+    font-weight: 600;
+    box-shadow: 0 18px 36px rgba(22, 101, 52, 0.12);
+    transition: transform 0.25s ease, background 0.25s ease, color 0.25s ease;
+  }
+
+  .demo-nav-btn:hover {
+    transform: translateY(-2px);
+    background: #f0fdf4;
+  }
+
+  .demo-nav-btn.is-primary {
+    background: linear-gradient(135deg, #22c55e, #86efac);
+    color: #14532d;
   }
 
   .demo-video-frame {
@@ -389,6 +453,17 @@ const CSS = `
     .demo-card {
       width: 100%;
       padding: 14px;
+    }
+
+    .demo-nav {
+      left: 10px;
+      right: 10px;
+      bottom: -12px;
+    }
+
+    .demo-nav-btn {
+      padding: 10px 14px;
+      font-size: 0.82rem;
     }
 
     .demo-card.card-1 {
