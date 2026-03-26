@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { Sparkles } from "lucide-react"
 import { useSelector } from "react-redux"
 import { toast } from "react-hot-toast"
@@ -7,9 +7,21 @@ import api from "../configs/api"
 const ProfessionalSummary = ({ data, onChange }) => {
   const { token } = useSelector((state) => state.auth)
   const [isEnhancing, setIsEnhancing] = useState(false)
+  const [summaryText, setSummaryText] = useState(data || "")
+
+  useEffect(() => {
+    setSummaryText(data || "")
+  }, [data])
+
+  const handleSummaryChange = (value) => {
+    setSummaryText(value)
+    onChange(value)
+  }
 
   const handleEnhance = async () => {
-    if (!data?.trim()) {
+    const currentSummary = summaryText.trim()
+
+    if (!currentSummary) {
       toast.error("Write a professional summary first")
       return
     }
@@ -24,13 +36,17 @@ const ProfessionalSummary = ({ data, onChange }) => {
 
       const { data: response } = await api.post(
         "/api/ai/enhance-pro-sum",
-        { userContent: data },
+        { userContent: currentSummary },
         { headers: { Authorization: token } }
       )
 
-      if (response?.enhancedContent) {
-        onChange(response.enhancedContent)
+      const enhancedContent = response?.enhancedContent?.trim()
+
+      if (enhancedContent) {
+        handleSummaryChange(enhancedContent)
         toast.success("Professional summary enhanced")
+      } else {
+        toast.error("AI did not return enhanced content")
       }
     } catch (error) {
       toast.error(error?.response?.data?.message || error.message)
@@ -67,8 +83,8 @@ const ProfessionalSummary = ({ data, onChange }) => {
       {/* Textarea */}
       <div className="mt-6">
         <textarea
-          value={data || ""}
-          onChange={(e) => onChange(e.target.value)}
+          value={summaryText}
+          onChange={(e) => handleSummaryChange(e.target.value)}
           rows={6}
           className="w-full p-3 px-4 mt-2 border text-sm border-gray-300 rounded-lg
           focus:ring focus:ring-blue-500 focus:border-blue-500 outline-none

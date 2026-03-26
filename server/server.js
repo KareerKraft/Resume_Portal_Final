@@ -10,16 +10,13 @@ import aiRouter from './routes/aiRoutes.js';
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-console.log("MONGODB_URI =", process.env.MONGODB_URI);
-
 // Database Connection
-await connectDB();
+const dbConnected = await connectDB();
 
 // Middlewares
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 app.use(cors());
-app.use('/api/resumes',resumeRouter)
 app.use('/api/ai',aiRouter)
 
 // Test Route
@@ -32,4 +29,7 @@ app.use('/api/resumes', resumeRouter);
 // Server Start
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
+    if (!dbConnected) {
+        console.log("Server started without a database connection. MongoDB will keep retrying in the background.");
+    }
 });

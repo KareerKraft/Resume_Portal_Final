@@ -12,7 +12,14 @@ import {
 
 
 
-const PersonalInfoForm = ({ data, onChange, removeBackground, setRemoveBackground }) => {
+const PersonalInfoForm = ({ data = {}, onChange, removeBackground, setRemoveBackground }) => {
+    const image = data?.image
+    const imagePreview =
+        typeof image === 'string'
+            ? image
+            : image instanceof Blob
+                ? URL.createObjectURL(image)
+                : null
 
     const handleChange = (field, value) => {
         onChange({ ...data, [field]: value })
@@ -50,13 +57,9 @@ const PersonalInfoForm = ({ data, onChange, removeBackground, setRemoveBackgroun
 
             <div className="flex items-center gap-2">
                 <label>
-                    {data.image ? (
+                    {imagePreview ? (
                         <img
-                            src={
-                                typeof data.image === 'string'
-                                    ? data.image
-                                    : URL.createObjectURL(data.image)
-                            }
+                            src={imagePreview}
                             alt="user-image"
                             className="w-16 h-16 rounded-full object-cover mt-5 ring ring-slate-300 hover:opacity-80"
                         />
@@ -74,7 +77,7 @@ const PersonalInfoForm = ({ data, onChange, removeBackground, setRemoveBackgroun
                         onChange={(e) => handleChange('image', e.target.files[0])}
                     />
                 </label>
-                {typeof data.image === 'object' && (
+                {image instanceof Blob && (
                     <div className="flex flex-col gap-1 pl-4 text-sm">
                         <p>Remove Background</p>
 
