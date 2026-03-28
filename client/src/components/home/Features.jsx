@@ -2,23 +2,23 @@ import React from 'react'
 import { Zap } from 'lucide-react'
 import Title from './Title'
 const Features = () => {
-  const [isHover, setIsHover] = React.useState(false);
   return (
     <>
       <div id='features' className='flex flex-col items-center mt-10 scroll-mt-12'>
 
         <div className="flex items-center gap-2 text-sm text-green-600 bg-green-400/10 rounded-full px-6 py-1.5">
           <Zap width={14} />
-          <span>Simple Process</span>
+          <span>Resume Builder Benefits</span>
         </div>
-        <Title title='Build your resume' description='Our streamlined process helps you create a professional resume in minutes with intelligent AI-powered tools and features.' />
+        <Title
+          title='Build a stronger resume with less effort'
+          description='Create polished, job-ready resumes faster with guided sections, professional templates, and smart tools designed to help you stand out to recruiters.'
+        />
         <div className="flex flex-col md:flex-row items-center">
           <img
             className="max-w-xl w-full xl:w-1/2"
             src="https://raw.githubusercontent.com/prebuiltui/prebuiltui/main/assets/features/group-image-1.png"
             alt=""
-            onMouseEnter={() => setIsHover(true)}
-            onMouseLeave={() => setIsHover(false)}
           />
 
           <div className="px-4 md:px-0 space-y-6">
@@ -45,10 +45,10 @@ const Features = () => {
               </div>
               <div className="space-y-2">
                 <h3 className="text-base font-semibold text-slate-700">
-                  Real-Time Analytics
+                  Professional templates
                 </h3>
                 <p className="text-sm text-slate-600 max-w-xs">
-                  Get instant insights into your finances with live dashboards.
+                  Pick from clean resume layouts that help your profile look modern, organized, and ready for applications.
                 </p>
               </div>
             </div>
@@ -76,10 +76,10 @@ const Features = () => {
               </div>
               <div className="space-y-2">
                 <h3 className="text-base font-semibold text-slate-700">
-                  Bank-Grade Security
+                  Faster content creation
                 </h3>
                 <p className="text-sm text-slate-600 max-w-xs">
-                  End-to-end encryption, 2FA, compliance with GDPR standards.
+                  Use guided inputs and AI-assisted writing support to build summaries, experience points, and skills more confidently.
                 </p>
               </div>
             </div>
@@ -110,10 +110,10 @@ const Features = () => {
               </div>
               <div className="space-y-2">
                 <h3 className="text-base font-semibold text-slate-700">
-                  Customizable Reports
+                  Easy editing and export
                 </h3>
                 <p className="text-sm text-slate-600 max-w-xs">
-                  Export professional, audit-ready financial reports for tax or internal review.
+                  Update your resume anytime, preview it before finalizing, and download a polished version when you are ready to apply.
                 </p>
               </div>
             </div>
