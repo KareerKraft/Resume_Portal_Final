@@ -5,7 +5,7 @@ const RECORDINGS = [
     id: 1,
     title: "Build Your Resume",
     caption: "Show how users start a resume and choose a template.",
-    src: "/videos/Resumeworking.mp4",
+    src: "/videos/ResumeWorking.mp4",
   },
   {
     id: 2,
@@ -21,11 +21,11 @@ const RECORDINGS = [
   },
 ];
 
-const FALLBACK_DURATION = 8000;
+const FALLBACK_DURATION = 15000;
 
 export default function DemoRecordings() {
   const [activeIndex, setActiveIndex] = useState(0);
-  const [loadedVideos, setLoadedVideos] = useState({});
+  const [videoStatus, setVideoStatus] = useState({});
   const timerRef = useRef(null);
   const videoRefs = useRef([]);
 
@@ -46,6 +46,8 @@ export default function DemoRecordings() {
     setActiveIndex((current) => (current - 1 + total) % total);
   };
 
+  const activeVideoStatus = videoStatus[activeIndex];
+
   useEffect(() => {
     const activeVideo = videoRefs.current[activeIndex];
     const allVideos = videoRefs.current.filter(Boolean);
@@ -58,8 +60,12 @@ export default function DemoRecordings() {
       }
     });
 
-    if (!activeVideo || !loadedVideos[activeIndex]) {
+    if (!activeVideo || activeVideoStatus === "error") {
       timerRef.current = setTimeout(goNext, FALLBACK_DURATION);
+      return () => clearTimeout(timerRef.current);
+    }
+
+    if (activeVideoStatus !== "ready") {
       return () => clearTimeout(timerRef.current);
     }
 
@@ -79,7 +85,7 @@ export default function DemoRecordings() {
       clearTimeout(timerRef.current);
       activeVideo.pause();
     };
-  }, [activeIndex, loadedVideos]);
+  }, [activeIndex, activeVideoStatus]);
 
   return (
     <>
@@ -90,9 +96,9 @@ export default function DemoRecordings() {
             <span className="demo-eyebrow">SCREEN RECORDINGS</span>
             <h2>See the builder in motion before the showcase begins.</h2>
             <p>
-              Add three walkthrough videos here. Each recording steps forward
-              automatically, and after the third video the sequence loops back
-              to the first.
+              Each screen recording plays fully from start to finish. When one
+              video ends, the next card slides forward automatically, and after
+              the third recording the sequence loops back to the first.
             </p>
             <div className="demo-indicators" aria-label="Recording progress">
               {RECORDINGS.map((item, index) => (
@@ -122,12 +128,18 @@ export default function DemoRecordings() {
                     src={item.src}
                     muted
                     playsInline
-                    preload="metadata"
+                    preload="auto"
                     controls={item.diff === 0}
-                    onLoadedData={() =>
-                      setLoadedVideos((current) => ({
+                    onCanPlay={() =>
+                      setVideoStatus((current) => ({
                         ...current,
-                        [item.index]: true,
+                        [item.index]: "ready",
+                      }))
+                    }
+                    onError={() =>
+                      setVideoStatus((current) => ({
+                        ...current,
+                        [item.index]: "error",
                       }))
                     }
                     onEnded={() => {
@@ -136,9 +148,9 @@ export default function DemoRecordings() {
                       }
                     }}
                   />
-                  {!loadedVideos[item.index] && (
+                  {videoStatus[item.index] === "error" && (
                     <div className="demo-placeholder">
-                      <span className="demo-placeholder-badge">Add MP4</span>
+                      <span className="demo-placeholder-badge">Video missing</span>
                       <strong>{item.title}</strong>
                       <p>{item.caption}</p>
                     </div>
@@ -323,8 +335,8 @@ const CSS = `
     width: 100%;
     height: 100%;
     display: block;
-    object-fit: cover;
-    background: #e5e7eb;
+    object-fit: contain;
+    background: #0f172a;
   }
 
   .demo-placeholder {

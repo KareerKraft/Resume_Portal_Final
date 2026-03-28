@@ -97,7 +97,9 @@ export default function Help() {
 
             <div className="mt-10 flex flex-wrap gap-4">
               <a
-                href="mailto:kareerkraft24@gmail.com"
+                href="https://mail.google.com/mail/?view=cm&fs=1&to=kareerkraft24@gmail.com"
+                target="_blank"
+                rel="noreferrer"
                 className="inline-flex items-center gap-3 rounded-full border border-green-200 bg-white px-5 py-3 text-sm font-medium text-slate-800 shadow-sm transition hover:-translate-y-0.5 hover:border-green-400 hover:text-green-700"
                 aria-label="Send an email to Kareer Kraft"
               >
@@ -169,7 +171,9 @@ export default function Help() {
               </p>
               <div className="mt-4 flex items-center gap-4">
                 <a
-                  href="mailto:kareerkraft24@gmail.com"
+                  href="https://mail.google.com/mail/?view=cm&fs=1&to=kareerkraft24@gmail.com"
+                  target="_blank"
+                  rel="noreferrer"
                   className="flex h-14 w-14 items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-700 shadow-sm transition hover:-translate-y-0.5 hover:border-green-400 hover:text-green-700"
                   aria-label="Email Kareer Kraft"
                 >
