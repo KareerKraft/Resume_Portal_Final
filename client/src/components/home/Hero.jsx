@@ -27,8 +27,8 @@ const Hero = () => {
                     <div className="hidden md:flex items-center gap-8 transition duration-500 text-slate-800">
                         <a href="#" className="hover:text-green-600 transition">Home</a>
                         <a href="#features" className="hover:text-green-600 transition">Features</a>
-                        {/* <a href="#testimonials" className="hover:text-green-600 transition">Testimonials</a> */}
-                        <a href="#cta" className="hover:text-green-600 transition">Contact</a>
+                        <a href="#demo" className="hover:text-green-600 transition">Demo</a>
+                        <a href="#showcase" className="hover:text-green-600 transition">Showcase</a>
                     </div>
 
                     <div className="flex gap-2">
@@ -52,10 +52,10 @@ const Hero = () => {
 
                 {/* Mobile Menu */}
                 <div className={`fixed inset-0 z-[100] bg-black/40 text-black backdrop-blur flex flex-col items-center justify-center text-lg gap-8 md:hidden transition-transform duration-300 ${menuOpen ? "translate-x-0" : "-translate-x-full"}`} >
-                    <a href="#" className="text-white">Home</a>
-                    <a href="#features" className="text-white">Features</a>
-                    <a href="#testimonials" className="text-white">Testimonials</a>
-                    <a href="#contact" className="text-white">Contact</a>
+                    <a href="#" className="text-white" onClick={() => setMenuOpen(false)}>Home</a>
+                    <a href="#features" className="text-white" onClick={() => setMenuOpen(false)}>Features</a>
+                    <a href="#demo" className="text-white" onClick={() => setMenuOpen(false)}>Demo</a>
+                    <a href="#showcase" className="text-white" onClick={() => setMenuOpen(false)}>Showcase</a>
                     <button onClick={() => setMenuOpen(false)} className="active:ring-3 active:ring-white aspect-square size-10 p-1 items-center justify-center bg-green-600 hover:bg-green-700 transition text-white rounded-md flex" >
                         X
                     </button>

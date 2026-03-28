@@ -84,7 +84,7 @@ export default function DemoRecordings() {
   return (
     <>
       <style>{CSS}</style>
-      <section className="demo-recordings">
+      <section id="demo" className="demo-recordings">
         <div className="demo-shell">
           <div className="demo-copy">
             <span className="demo-eyebrow">SCREEN RECORDINGS</span>

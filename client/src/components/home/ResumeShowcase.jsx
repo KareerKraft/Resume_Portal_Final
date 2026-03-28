@@ -65,7 +65,7 @@ export default function ResumeShowcase() {
   return (
     <>
       <style>{CSS}</style>
-      <section className="rs-section">
+      <section id="showcase" className="rs-section">
         <div className="rs-wrapper">
 
           {/* LEFT: Carousel */}
