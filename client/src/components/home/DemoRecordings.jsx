@@ -5,19 +5,19 @@ const RECORDINGS = [
     id: 1,
     title: "Build Your Resume",
     caption: "Show how users start a resume and choose a template.",
-    src: "/videos/ResumeWorking.mp4",
+    sources: ["/videos/ResumeWorking.mp4", "/videos/recording-1.mp4"],
   },
   {
     id: 2,
     title: "Enhance With AI",
     caption: "Highlight the AI features that improve resume content.",
-    src: "/videos/ResumeWorking2.mp4",
+    sources: ["/videos/ResumeWorking2.mp4", "/videos/recording-2.mp4"],
   },
   {
     id: 3,
     title: "Preview And Download",
     caption: "Demonstrate the preview flow and final export experience.",
-    src: "/videos/ResumeWorking3.mp4",
+    sources: ["/videos/ResumeWorking3.mp4", "/videos/recording-3.mp4"],
   },
 ];
 
@@ -125,7 +125,6 @@ export default function DemoRecordings() {
                     ref={(element) => {
                       videoRefs.current[item.index] = element;
                     }}
-                    src={item.src}
                     muted
                     playsInline
                     preload="auto"
@@ -147,14 +146,11 @@ export default function DemoRecordings() {
                         goNext();
                       }
                     }}
-                  />
-                  {videoStatus[item.index] === "error" && (
-                    <div className="demo-placeholder">
-                      <span className="demo-placeholder-badge">Video missing</span>
-                      <strong>{item.title}</strong>
-                      <p>{item.caption}</p>
-                    </div>
-                  )}
+                  >
+                    {item.sources.map((source) => (
+                      <source key={source} src={source} type="video/mp4" />
+                    ))}
+                  </video>
                 </div>
                 <div className="demo-meta">
                   <span className="demo-step">0{item.id}</span>
