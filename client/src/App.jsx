@@ -75,6 +75,7 @@ import Dashboard from "./pages/Dashboard";
 import ResumeBuilder from "./pages/ResumeBuilder";
 import Login from "./pages/Login";
 import Preview from "./pages/Preview";
+import Help from "./pages/Help";
 
 import api from "./configs/api";
 import { login, setLoading } from "./app/features/authSlice";
@@ -140,6 +141,8 @@ const App = () => {
         <Route path="/login" element={<Login />} />
 
         <Route path="/register" element={<Login />} />
+
+        <Route path="/help" element={<Help />} />
 
         {/* Public resume preview */}
 

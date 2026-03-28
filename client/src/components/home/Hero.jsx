@@ -29,6 +29,7 @@ const Hero = () => {
                         <a href="#features" className="hover:text-green-600 transition">Features</a>
                         <a href="#demo" className="hover:text-green-600 transition">Demo</a>
                         <a href="#showcase" className="hover:text-green-600 transition">Showcase</a>
+                        <Link to="/help" className="hover:text-green-600 transition">Help</Link>
                     </div>
 
                     <div className="flex gap-2">
@@ -56,6 +57,7 @@ const Hero = () => {
                     <a href="#features" className="text-white" onClick={() => setMenuOpen(false)}>Features</a>
                     <a href="#demo" className="text-white" onClick={() => setMenuOpen(false)}>Demo</a>
                     <a href="#showcase" className="text-white" onClick={() => setMenuOpen(false)}>Showcase</a>
+                    <Link to="/help" className="text-white" onClick={() => setMenuOpen(false)}>Help</Link>
                     <button onClick={() => setMenuOpen(false)} className="active:ring-3 active:ring-white aspect-square size-10 p-1 items-center justify-center bg-green-600 hover:bg-green-700 transition text-white rounded-md flex" >
                         X
                     </button>
