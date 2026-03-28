@@ -19,6 +19,7 @@ import {
   FolderIcon,
   Sparkles,
 } from "lucide-react"
+import { Link2, Mail, MessageCircle, X } from "lucide-react";
 
 import TemplateSelector from "../components/TemplateSelector"
 import ColorPicker from "../components/ColorPicker"
@@ -29,11 +30,10 @@ import ProjectForm from "../components/ProjectForm"
 import SkillsForm from "../components/SkillsForm"
 import PersonalInfoForm from "../components/PersonalInfoForm"
 import ResumePreview from "../components/ResumePreview"
-
 const ResumeBuilder = () => {
   const { resumeId } = useParams()
   const { token } = useSelector(state => state.auth)
-
+  const [showShareModal, setShowShareModal] = useState(false);
   const [resumeData, setResumeData] = useState({
     _id: "",
     title: "",
@@ -94,38 +94,38 @@ const ResumeBuilder = () => {
   const saveChanges = async () => {
     try {
       const formData = new FormData();
-      
+
       // Add image file if it exists and is a File object
       if (resumeData.personal_info.image instanceof File) {
         formData.append('image', resumeData.personal_info.image);
       }
-      
+
       // Create a copy of resumeData without the image for sending
       const resumeDataToSend = JSON.parse(JSON.stringify(resumeData));
       if (resumeData.personal_info.image instanceof File) {
         delete resumeDataToSend.personal_info.image;
       }
-      
+
       // Add form fields
       formData.append('resumeId', resumeId);
       formData.append('resumeData', JSON.stringify(resumeDataToSend));
       formData.append('removeBackground', removeBackground);
-      
+
       const response = await api.put(
         `/api/resumes/update`,
         formData,
         {
-          headers: { 
+          headers: {
             Authorization: token
           }
         }
       );
-      
+
       // Update state with the response data (includes image URL if uploaded)
       if (response.data.resume) {
         setResumeData(response.data.resume);
       }
-      
+
       toast.success('Resume saved successfully!');
     } catch (error) {
       toast.error(error?.response?.data?.message || error.message);
@@ -140,7 +140,7 @@ const ResumeBuilder = () => {
       // Create a copy of resume data for sending (without File objects)
       const resumeDataToSend = JSON.parse(JSON.stringify(resumeData));
       resumeDataToSend.public = newPublic;
-      
+
       // Remove image if it's a File object (will be undefined after JSON.stringify)
       // JSON.stringify will convert File objects to {}, so we just send as-is
 
@@ -173,19 +173,6 @@ const ResumeBuilder = () => {
     }
   }
 
-  const handleShare = () => {
-    const resumeUrl = `${window.location.origin}/view/${resumeId}`
-
-    if (navigator.share && /Mobi|Android/i.test(navigator.userAgent)) {
-      navigator.share({
-        title: "My Resume",
-        url: resumeUrl,
-      })
-    } else {
-      navigator.clipboard.writeText(resumeUrl)
-      alert("Resume link copied to clipboard")
-    }
-  }
 
   const downloadResume = () => {
     const printContents = document.getElementById("resume-print").innerHTML
@@ -196,6 +183,16 @@ const ResumeBuilder = () => {
     document.body.innerHTML = originalContents
     window.location.reload()
   }
+  const shareEmail = (url) => {
+  const subject = encodeURIComponent("Check out my resume");
+  const body = encodeURIComponent(`Hi,\n\nHere is my resume:\n${url}`);
+
+  window.open(
+    `https://mail.google.com/mail/?view=cm&fs=1&su=${subject}&body=${body}`,
+    "_blank"
+  );
+};
+
 
   /* ================= UI ================= */
 
@@ -351,7 +348,7 @@ const ResumeBuilder = () => {
           <div className="lg:col-span-7">
             <div className="flex justify-end gap-2 mb-4">
               <button
-                onClick={handleShare}
+                onClick={() => setShowShareModal(true)}
                 className="flex items-center p-2 px-4 gap-2 text-xs
                 bg-gradient-to-br from-blue-100 to-blue-200 text-blue-600
                 rounded-lg ring-1 ring-blue-300 hover:ring-blue-400 transition-colors"
@@ -370,7 +367,7 @@ const ResumeBuilder = () => {
                 )}
                 {resumeData.public ? "Public" : "Private"}
               </button>
-
+              
               <button
                 onClick={downloadResume}
                 className="flex items-center gap-2 px-6 py-2 text-xs
@@ -393,6 +390,87 @@ const ResumeBuilder = () => {
 
         </div>
       </div>
+      {showShareModal && (
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+
+          <div className="bg-[#1f1f1f] text-white w-[420px] rounded-xl p-6">
+
+            {/* Header */}
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-lg font-semibold">Share</h2>
+              <button onClick={() => setShowShareModal(false)}>
+                <X />
+              </button>
+            </div>
+
+            {/* Icons Row */}
+            <div className="flex gap-5 justify-center mb-6">
+
+              {/* WhatsApp */}
+              <button
+                onClick={() => {
+                  const url = `${window.location.origin}/view/${resumeId}`;
+                  window.open(`https://wa.me/?text=${encodeURIComponent(url)}`);
+                }}
+                className="flex flex-col items-center gap-2 group"
+              >
+                <div className="bg-green-500 p-3 rounded-full group-hover:scale-110 transition">
+                  <MessageCircle size={20} className="text-white" />
+                </div>
+                <span className="text-xs text-gray-300">WhatsApp</span>
+              </button>
+              {/* Email */}
+              <button
+                onClick={() => {
+                  const url = `${window.location.origin}/view/${resumeId}`;
+                  shareEmail(url);
+                }}
+                className="flex flex-col items-center gap-2 group"
+              >
+                <div className="bg-gray-600 p-3 rounded-full group-hover:scale-110 transition">
+                  <Mail size={20} className="text-white" />
+                </div>
+                <span className="text-xs text-gray-300">Email</span>
+              </button>
+
+              {/* Copy */}
+              <button
+                onClick={() => {
+                  const url = `${window.location.origin}/view/${resumeId}`;
+                  navigator.clipboard.writeText(url);
+                  toast.success("Copied!");
+                }}
+                className="flex flex-col items-center gap-1"
+              >
+                <div className="bg-blue-500 p-3 rounded-full">
+                  <Link2 />
+                </div>
+                <span className="text-xs">Copy</span>
+              </button>
+
+            </div>
+
+            {/* Link Box */}
+            <div className="flex items-center bg-black rounded-lg overflow-hidden">
+              <input
+                value={`${window.location.origin}/view/${resumeId}`}
+                readOnly
+                className="flex-1 bg-transparent px-3 py-2 text-sm outline-none"
+              />
+              <button
+                onClick={() => {
+                  navigator.clipboard.writeText(`${window.location.origin}/view/${resumeId}`);
+                  toast.success("Copied!");
+                }}
+                className="bg-blue-600 px-4 py-2 text-sm"
+              >
+                Copy
+              </button>
+            </div>
+
+          </div>
+        </div>
+      )}
     </div>
   )
 }
